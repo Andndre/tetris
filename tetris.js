@@ -139,7 +139,6 @@ class Tetris {
 			this.boxes[coord[1]].push(
 				new Cell(coord[0], this.scale, this.activeMaterial)
 			);
-			print(this.boxes.length);
 		}
 	}
 
