@@ -2,6 +2,10 @@ var tetris, move;
 var loaded = false;
 var spacebarImg;
 var arrowImg;
+let spacebarHeight;
+let spacebarWidth;
+let arrowImgHeight;
+let arrowImgWidth;
 
 let w, h;
 
@@ -28,6 +32,10 @@ function setup() {
 	colorMode(HSB);
 	background(57, 255 * 0.035, 255 * 0.2);
 	tetris = new Tetris(10, 20);
+	spacebarHeight = (spacebarImg.height / 100) * tetris.scale;
+	spacebarWidth = (spacebarImg.width / 100) * tetris.scale;
+	arrowImgWidth = (arrowImg.width / 65) * tetris.scale;
+	arrowImgHeight = (arrowImg.height / 65) * tetris.scale;
 	frameRate(1.4);
 	strokeWeight(2);
 	stroke(0);
@@ -40,30 +48,24 @@ function draw() {
 	push();
 	colorMode(RGB);
 	tint(255, 75);
-	image(
-		spacebarImg,
-		0,
-		h - spacebarImg.height / 3,
-		spacebarImg.width / 3,
-		spacebarImg.height / 3
-	);
+	image(spacebarImg, 0, h - spacebarHeight, spacebarWidth, spacebarHeight);
 	image(
 		arrowImg,
-		w - arrowImg.width / 2,
-		h - arrowImg.height / 2,
-		arrowImg.width / 2,
-		arrowImg.height / 2
+		w - arrowImgWidth,
+		h - arrowImgHeight,
+		arrowImgWidth,
+		arrowImgHeight
 	);
 	pop();
 }
 
 function mouseClicked() {
 	if (tetris.isGameOver) return;
-	if (mouseY > h - arrowImg.height / 2) {
-		if (mouseY < h - arrowImg.height / 4) {
+	if (mouseY > h - arrowImgHeight) {
+		if (mouseY < h - arrowImgHeight / 2) {
 			if (
-				mouseX > w - arrowImg.width / 2 + arrowImg.width / 6 &&
-				mouseX < w - arrowImg.width / 6
+				mouseX > w - arrowImgWidth + arrowImgWidth / 3 &&
+				mouseX < w - arrowImgWidth / 3
 			) {
 				tetris.rotate(LEFT);
 				move = false;
@@ -71,26 +73,26 @@ function mouseClicked() {
 				return;
 			}
 		}
-		if (mouseX < spacebarImg.width / 3) {
+		if (mouseX < spacebarWidth) {
 			tetris.hardDrop();
 			move = false;
 			redraw();
 			return;
 		}
-		if (mouseY > h - arrowImg.height / 4) {
-			if (mouseX > w - arrowImg.width / 6) {
+		if (mouseY > h - arrowImgHeight / 2) {
+			if (mouseX > w - arrowImgWidth / 3) {
 				tetris.move(RIGHT);
 				move = false;
 				redraw();
 				return;
 			}
-			if (mouseX > w - (arrowImg.width / 2) * (2 / 3)) {
+			if (mouseX > w - arrowImgWidth * (2 / 3)) {
 				tetris.move(DOWN);
 				move = false;
 				redraw();
 				return;
 			}
-			if (mouseX > w - arrowImg.width / 2) {
+			if (mouseX > w - arrowImgWidth) {
 				tetris.move(LEFT);
 				move = false;
 				redraw();
