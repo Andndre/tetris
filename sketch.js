@@ -32,10 +32,10 @@ function setup() {
 	colorMode(HSB);
 	background(57, 255 * 0.035, 255 * 0.2);
 	tetris = new Tetris(10, 20);
-	spacebarHeight = (spacebarImg.height / 100) * tetris.scale;
-	spacebarWidth = (spacebarImg.width / 100) * tetris.scale;
-	arrowImgWidth = (arrowImg.width / 65) * tetris.scale;
-	arrowImgHeight = (arrowImg.height / 65) * tetris.scale;
+	spacebarHeight = (spacebarImg.height / 120) * tetris.scale;
+	spacebarWidth = (spacebarImg.width / 120) * tetris.scale;
+	arrowImgWidth = (arrowImg.width / 75) * tetris.scale;
+	arrowImgHeight = (arrowImg.height / 75) * tetris.scale;
 	frameRate(1.4);
 	strokeWeight(2);
 	stroke(0);
