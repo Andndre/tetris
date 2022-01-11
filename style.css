@@ -1,7 +1,7 @@
 html, body {
   margin: 0;
   padding: 0;
-  background-color: hsl(57, 35%, 20%);
+  background-color: hsl(0, 0%, 0%);
 }
 
 canvas {
@@ -11,4 +11,8 @@ canvas {
   margin-right: auto;
   display: block;
   touch-action: manipulation;
+}
+
+audio {
+  display: none;
 }

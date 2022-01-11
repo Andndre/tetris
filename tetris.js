@@ -1,71 +1,182 @@
 var SIZE_X = 10;
 var SIZE_Y = 24;
 let showCellNumber = false;
+let grey = "#6e6e6e";
+let colors = [
+	"#f02011",
+	"#f07211",
+	"#f0c311",
+	"#c7f011",
+	"#11ecf0",
+	"#1172f0",
+	"#b511f0",
+	"#f0118c",
+];
 
 // Not to change
+const LEFT = -1;
+const RIGHT = 1;
+const DOWN = 0;
 const GAMEOVER = -1;
 const WALL = 0;
 const MOVE = 1;
 const SPAWN = 2;
-const SHAPES_OFFSETS = [
-	// O
-	[[0, 1, -SIZE_X, -SIZE_X + 1]],
-	// I
-	[
-		[-SIZE_X, 0, SIZE_X],
-		[-1, 0, 1],
-	],
-	// Z
-	[
-		[-SIZE_X + 1, -SIZE_X, 0, -1],
-		[SIZE_X + 1, 1, 0, -SIZE_X],
-	],
-	// T
-	[
-		[-SIZE_X, -1, 0, 1],
-		[1, -SIZE_X, 0, SIZE_X],
-		[SIZE_X, 1, 0, -1],
-		[-1, -SIZE_X, 0, SIZE_X],
-	],
-	// L
-	[
-		[-SIZE_X, 0, SIZE_X, SIZE_X + 1],
-		[1, 0, -1, SIZE_X - 1],
-		[SIZE_X, 0, -SIZE_X, -SIZE_X - 1],
-		[-1, 0, 1, -SIZE_X + 1],
-	],
-	// J
-	[
-		[-SIZE_X, 0, SIZE_X, SIZE_X - 1],
-		[1, 0, -1, -SIZE_X - 1],
-		[SIZE_X, 0, -SIZE_X, -SIZE_X + 1],
-		[-1, 0, 1, SIZE_X + 1],
-	],
-];
 
 class Tetris {
 	constructor() {
-		this.scale = width / SIZE_X;
+		this.shapesOffsets = [
+			// O
+			[
+				[
+					createVector(0, 0),
+					createVector(1, 0),
+					createVector(0, -1),
+					createVector(1, -1),
+				],
+			],
+			// I
+			[
+				[
+					createVector(0, -1),
+					createVector(0, 0),
+					createVector(0, 1),
+					createVector(0, 2),
+				],
+				[
+					createVector(-1, 0),
+					createVector(0, 0),
+					createVector(1, 0),
+					createVector(2, 0),
+				],
+			],
+			// Z
+			[
+				[
+					createVector(1, -1),
+					createVector(0, -1),
+					createVector(0, 0),
+					createVector(-1, 0),
+				],
+				[
+					createVector(1, 1),
+					createVector(1, 0),
+					createVector(0, 0),
+					createVector(0, -1),
+				],
+			],
+			// T
+			[
+				[
+					createVector(0, -1),
+					createVector(-1, 0),
+					createVector(0, 0),
+					createVector(1, 0),
+				],
+				[
+					createVector(0, 0),
+					createVector(0, -1),
+					createVector(1, 0),
+					createVector(0, 1),
+				],
+				[
+					createVector(0, 1),
+					createVector(1, 0),
+					createVector(0, 0),
+					createVector(-1, 0),
+				],
+				[
+					createVector(-1, 0),
+					createVector(0, -1),
+					createVector(0, 0),
+					createVector(0, 1),
+				],
+			],
+			// L
+			[
+				[
+					createVector(0, -1),
+					createVector(0, 0),
+					createVector(0, 1),
+					createVector(1, 1),
+				],
+				[
+					createVector(1, 0),
+					createVector(0, 0),
+					createVector(-1, 0),
+					createVector(-1, 1),
+				],
+				[
+					createVector(0, 1),
+					createVector(0, 0),
+					createVector(0, -1),
+					createVector(-1, -1),
+				],
+				[
+					createVector(-1, 0),
+					createVector(0, 0),
+					createVector(1, 0),
+					createVector(1, -1),
+				],
+			],
+			// J
+			[
+				[
+					createVector(0, -1),
+					createVector(0, 0),
+					createVector(0, 1),
+					createVector(-1, 1),
+				],
+				[
+					createVector(1, 0),
+					createVector(0, 0),
+					createVector(-1, 0),
+					createVector(-1, -1),
+				],
+				[
+					createVector(0, 1),
+					createVector(0, 0),
+					createVector(0, -1),
+					createVector(1, -1),
+				],
+				[
+					createVector(-1, 0),
+					createVector(0, 0),
+					createVector(1, 0),
+					createVector(1, 1),
+				],
+			],
+		];
+		this.scale = w / SIZE_X;
 		this.boxes = [];
-		this.activeMaterial = random(100);
+		this.activeMaterial = colors[floor(random(colors.length))];
 		this.activeType = floor(random(6));
-		this.activeIndex = 15;
+		this.activeCoord = createVector(0, 0);
 		this.isGameOver = false;
 		this.rotation = 0;
 		this.score = 0;
+		this.nextActiveType = floor(random(6));
+		this.nextActiveMaterial = colors[floor(random(colors.length))];
+		this.nextActiveCoord = createVector(SIZE_X / 2, 1);
 
-		for (let i = 0; i < SIZE_Y; i++) {
+		for (let i = 0; i <= SIZE_Y; i++) {
 			this.boxes.push([]);
 		}
 
+		for (let i = 0; i < SIZE_X; i++) {
+			this.boxes[SIZE_Y].push(new Cell(i, this.scale, grey));
+		}
 		this.spawn();
+		this.update();
 	}
 
 	spawn() {
 		this.rotation = 0;
-		this.activeMaterial = random(100);
-		this.activeType = floor(random(6));
-		this.activeIndex = floor(SIZE_X + SIZE_X / 2);
+		this.activeMaterial = this.nextActiveMaterial;
+		this.activeType = this.nextActiveType;
+		this.activeCoord = this.nextActiveCoord;
+		this.nextActiveMaterial = colors[floor(random(colors.length))];
+		this.nextActiveType = floor(random(6));
+		this.nextActiveCoord = createVector(SIZE_X / 2, 1);
 		this.renderActive();
 	}
 
@@ -78,11 +189,15 @@ class Tetris {
 	}
 
 	renderActive() {
-		let coords = this.getCoords(this.activeIndex, this.rotation);
+		let coords = this.getCoords(
+			this.activeType,
+			this.activeCoord,
+			this.rotation
+		);
 		for (let coord of coords) {
 			Cell.display(
-				coord[0],
-				coord[1],
+				coord.x,
+				coord.y,
 				this.scale,
 				this.activeMaterial,
 				false
@@ -90,23 +205,43 @@ class Tetris {
 		}
 	}
 
-	renderDropped() {
-		let coords = this.hardDropCoords();
+	renderNext() {
+		let coords = this.getCoords(
+			this.nextActiveType,
+			this.nextActiveCoord,
+			0
+		);
 		for (let coord of coords) {
 			Cell.display(
-				coord[0],
-				coord[1],
+				coord.x - 10,
+				coord.y + 3,
 				this.scale,
-				this.activeMaterial,
-				true
+				this.nextActiveMaterial,
+				false
 			);
 		}
 	}
 
-	move(dir) {
-		let before = this.getCoords(this.activeIndex, this.rotation);
-		let after = this.getCoords(this.activeIndex + dir, this.rotation);
+	renderBorder() {
+		for (let i = 0; i < SIZE_Y; i++) {
+			Cell.display(-1, i, this.scale, grey);
+			Cell.display(SIZE_X, i, this.scale, grey);
+		}
+	}
 
+	move(dir) {
+		let before = this.getCoords(
+			this.activeType,
+			this.activeCoord,
+			this.rotation
+		);
+		let newCoord = createVector(
+			dir == LEFT || dir == RIGHT
+				? this.activeCoord.x + dir
+				: this.activeCoord.x,
+			dir == DOWN ? this.activeCoord.y + 1 : this.activeCoord.y
+		);
+		let after = this.getCoords(this.activeType, newCoord, this.rotation);
 		let wall = this.checkWallOnMove(dir, after);
 
 		if (wall == WALL) return;
@@ -126,51 +261,61 @@ class Tetris {
 			return;
 		}
 
-		this.activeIndex += dir;
+		this.activeCoord = newCoord;
 		this.renderActive();
 	}
 
 	applyBoxes(coords) {
 		for (let coord of coords) {
-			if (coord[1] <= 3) {
+			if (coord.y <= 3) {
 				this.isGameOver = true;
 				return;
 			}
-			this.boxes[coord[1]].push(
-				new Cell(coord[0], this.scale, this.activeMaterial)
+			this.boxes[coord.y].push(
+				new Cell(coord.x, this.scale, this.activeMaterial)
 			);
 		}
 	}
 
 	checkForScore() {
-		for (let i = this.boxes.length - 1; i >= 0; i--) {
+		let combo = 0;
+		for (let i = this.boxes.length - 2; i >= 0; i--) {
 			if (this.boxes[i].length == SIZE_X) {
 				this.boxes.splice(i, 1);
 				this.boxes.unshift([]);
-				this.score++;
+				combo++;
 				i++;
 			}
+		}
+		switch (combo) {
+			case 0:
+				break;
+			case 1:
+				this.score += 40;
+				break;
+			case 2:
+				this.score += 100;
+				break;
+			case 3:
+				this.score += 300;
+				break;
+			case 4:
+			default:
+				this.score += 1200;
+				break;
 		}
 	}
 
 	checkWallOnMove(dir, coords) {
 		if (dir == LEFT || dir == RIGHT) {
 			for (let coord of coords) {
-				let index = coordsToIndex(coord[0], coord[1]);
-				if (dir == LEFT && index % SIZE_X == 0) {
-					return WALL;
-				} else if (dir == RIGHT && (index - 1) % SIZE_X == 0) {
-					return WALL;
-				}
+				if (coord.x == -1 || coord.x == SIZE_X) return WALL;
 			}
 		}
 
 		if (dir == DOWN) {
 			for (let coord of coords) {
-				let index = coordsToIndex(coord[0], coord[1]);
-				if (index > SIZE_X * SIZE_Y) {
-					return SPAWN;
-				}
+				if (coord.y >= SIZE_Y) return SPAWN;
 			}
 		}
 
@@ -183,13 +328,13 @@ class Tetris {
 		let after = this.rotation;
 
 		after += rot;
-		after %= SHAPES_OFFSETS[this.activeType].length;
+		after %= this.shapesOffsets[this.activeType].length;
 
 		if (after == -1) {
-			after = SHAPES_OFFSETS[this.activeType].length - 1;
+			after = this.shapesOffsets[this.activeType].length - 1;
 		}
 
-		let coords = this.getCoords(this.activeIndex, after);
+		let coords = this.getCoords(this.activeType, this.activeCoord, after);
 		let intersects = this.checkIntersection(coords);
 
 		if (intersects == SPAWN) return;
@@ -197,38 +342,27 @@ class Tetris {
 		this.rotation = after;
 	}
 
-	getIndexes(index, rotation) {
+	getIndexes(type, index, rotation) {
 		let result = [];
-		for (
-			let i = 0;
-			i < SHAPES_OFFSETS[this.activeType][rotation].length;
-			i++
-		) {
-			result.push(index + SHAPES_OFFSETS[this.activeType][rotation][i]);
+		for (let i = 0; i < this.shapesOffsets[type][rotation].length; i++) {
+			result.push(index + this.shapesOffsets[type][rotation][i]);
 		}
 		return result;
 	}
 
-	getCoords(index, rotation) {
+	getCoords(type, center, rotation) {
 		let result = [];
-		for (
-			let i = 0;
-			i < SHAPES_OFFSETS[this.activeType][rotation].length;
-			i++
-		) {
-			result.push(
-				indexToCoords(
-					index + SHAPES_OFFSETS[this.activeType][rotation][i]
-				)
-			);
+		for (let i = 0; i < this.shapesOffsets[type][rotation].length; i++) {
+			let offset = this.shapesOffsets[type][rotation][i];
+			result.push(createVector(offset.x + center.x, offset.y + center.y));
 		}
 		return result;
 	}
 
 	checkIntersection(coords) {
 		for (let i = 0; i < coords.length; i++) {
-			for (let j = 0; j < this.boxes[coords[i][1]].length; j++) {
-				if (this.boxes[coords[i][1]][j].x == coords[i][0]) {
+			for (let j = 0; j < this.boxes[coords[i].y].length; j++) {
+				if (this.boxes[coords[i].y][j].x == coords[i].x) {
 					return SPAWN;
 				}
 			}
@@ -237,10 +371,7 @@ class Tetris {
 	}
 
 	checkWallOnRotation() {
-		if (
-			(this.activeIndex - 1) % SIZE_X == 0 ||
-			this.activeIndex % SIZE_X == 0
-		)
+		if (this.activeCoord.x <= 0 || this.activeCoord.x >= SIZE_X - 1)
 			return WALL;
 		return MOVE;
 	}
@@ -248,14 +379,13 @@ class Tetris {
 	gameOver() {
 		noLoop();
 		this.display(true);
-
 		push();
 		fill(255);
-		textSize(29);
+		textSize(this.scale);
 		textAlign(CENTER);
-		text("Game Over", width / 2, height / 2);
-		textSize(20);
-		text("Score: " + this.score, width / 2, height / 2 + 30);
+		text("Game Over", w / 2, height / 2);
+		textSize(this.scale * 0.7);
+		text("Score: " + this.score, w / 2, height / 2 + tetris.scale);
 		pop();
 		this.isGameOver = true;
 	}
@@ -268,35 +398,37 @@ class Tetris {
 			this.updateScore();
 		}
 		if (mv) this.move(DOWN);
-		move = true;
+		autoMoveDown = true;
+		// this.renderDropped();
 		this.renderActive();
-		this.renderDropped();
 		this.checkForScore();
+		this.renderNext();
+		this.renderBorder();
 	}
 
 	hardDropCoords() {
-		let coords = this.getCoords(this.activeIndex, this.rotation);
+		let coords = this.getCoords(
+			this.activeType,
+			this.activeCoord,
+			this.rotation
+		);
 		let minDistance = SIZE_Y;
 		for (let coord of coords) {
 			let hit = false;
-			for (let i = coord[1] + 1; i < this.boxes.length; i++) {
+			for (let i = coord.y + 1; i < this.boxes.length; i++) {
 				for (let j = 0; j < this.boxes[i].length; j++) {
-					if (coord[0] == this.boxes[i][j].x) {
-						minDistance = min(minDistance, i - coord[1] - 1);
+					if (coord.x == this.boxes[i][j].x) {
+						minDistance = min(minDistance, i - coord.y - 1);
 						hit = true;
 						break;
 					}
 				}
 				if (hit) break;
-				if (i == this.boxes.length - 1) {
-					minDistance = min(minDistance, i - coord[1]);
-					if (minDistance <= 1) return coords;
-				}
 			}
 		}
 
 		for (let i = 0; i < coords.length; i++) {
-			coords[i][1] += minDistance;
+			coords[i].y += minDistance;
 		}
 		return coords;
 	}
@@ -310,59 +442,7 @@ class Tetris {
 
 	updateScore() {
 		fill(255);
-		textSize(20);
-		text("Score: " + this.score, 10, 25);
+		textSize(this.scale * 0.5);
+		text("Score: " + this.score, 20, this.scale);
 	}
-}
-
-class Cell {
-	constructor(x, scale, hue) {
-		this.x = x;
-		this.scale = scale;
-		this.hue = hue;
-	}
-
-	static display(x, y, scale, hue, overlay) {
-		let coords = createVector(x * scale, y * scale);
-		fill((hue * 30) % 255, 175, overlay ? 25 : 100);
-		rect(coords.x, coords.y, scale);
-
-		if (!showCellNumber) return;
-		push();
-		fill(75);
-		textSize(9);
-		textAlign(CENTER);
-		text(
-			"(" + x + ", " + y + ")\n" + coordsToIndex(x, y),
-			coords.x + scale / 2,
-			coords.y + scale / 2
-		);
-		pop();
-	}
-
-	display(overlay, y) {
-		let coords = createVector(this.x * this.scale, y * this.scale);
-		fill((this.hue * 30) % 255, 175, overlay ? 25 : 100);
-		rect(coords.x, coords.y, this.scale);
-
-		if (!showCellNumber) return;
-		push();
-		fill(75);
-		textSize(9);
-		textAlign(CENTER);
-		text(
-			"(" + this.x + ", " + y + ")\n" + coordsToIndex(this.x, y, 10),
-			coords.x + this.scale / 2,
-			coords.y + this.scale / 2
-		);
-		pop();
-	}
-}
-
-function coordsToIndex(x, y) {
-	return y * SIZE_X + x + 1;
-}
-
-function indexToCoords(index) {
-	return [(index - 1) % SIZE_X, ceil(index / SIZE_X) - 1];
 }

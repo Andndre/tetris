@@ -1,11 +1,6 @@
-# Tetris
-Tetris using p5.js library
-
-play [here](https://agungandre01.github.io/tetris/)
-
-note: performance on mobile devices may be slow
+# [T E T R I S](https://andndre.github.io/tetris/)
 
 #### Screenshots
-<img src="https://user-images.githubusercontent.com/81848639/141072647-376eee17-636d-4175-88a5-2f0535b13712.png" alt="gameplay1" width=200></img><br>
+<img src="https://user-images.githubusercontent.com/81848639/148924738-43006424-662c-4e9c-b13a-d1b616852aa8.png" alt="gameplay1" width=400></img><br>
 
-<img src="https://user-images.githubusercontent.com/81848639/141072938-62443ec1-9425-4458-bfc5-209894810c32.png" alt="gameplay2" width=200></img>
+<img src="https://user-images.githubusercontent.com/81848639/148924969-ba16340e-3c19-4806-9ffb-1edfbcd6f4a5.png" alt="gameplay2" width=400></img>
