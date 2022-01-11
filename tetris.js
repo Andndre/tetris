@@ -371,7 +371,10 @@ class Tetris {
 	}
 
 	checkWallOnRotation() {
-		if (this.activeCoord.x <= 0 || this.activeCoord.x >= SIZE_X - 1)
+		if (
+			this.activeCoord.x <= 0 ||
+			this.activeCoord.x >= SIZE_X - (this.activeType == 1 ? 2 : 1)
+		)
 			return WALL;
 		return MOVE;
 	}
