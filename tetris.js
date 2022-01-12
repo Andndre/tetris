@@ -1,5 +1,3 @@
-var SIZE_X = 10;
-var SIZE_Y = 24;
 let showCellNumber = false;
 let grey = "#6e6e6e";
 let colors = [
@@ -23,7 +21,9 @@ const MOVE = 1;
 const SPAWN = 2;
 
 class Tetris {
-	constructor() {
+	constructor(sizeX, sizeY) {
+		this.sizeX = sizeX;
+		this.sizeY = sizeY;
 		this.shapesOffsets = [
 			// O
 			[
@@ -146,7 +146,12 @@ class Tetris {
 				],
 			],
 		];
-		this.scale = w / SIZE_X;
+		this.width = windowHeight / (this.sizeY * 0.1);
+		if (this.width > windowWidth) {
+			this.width = windowWidth * 0.9;
+		}
+		this.height = this.width * (this.sizeY * 0.1);
+		this.scale = this.width / this.sizeX;
 		this.boxes = [];
 		this.activeMaterial = colors[floor(random(colors.length))];
 		this.activeType = floor(random(6));
@@ -156,14 +161,14 @@ class Tetris {
 		this.score = 0;
 		this.nextActiveType = floor(random(6));
 		this.nextActiveMaterial = colors[floor(random(colors.length))];
-		this.nextActiveCoord = createVector(SIZE_X / 2, 1);
+		this.nextActiveCoord = createVector(this.sizeX / 2, 1);
 
-		for (let i = 0; i <= SIZE_Y; i++) {
+		for (let i = 0; i <= this.sizeY; i++) {
 			this.boxes.push([]);
 		}
 
-		for (let i = 0; i < SIZE_X; i++) {
-			this.boxes[SIZE_Y].push(new Cell(i, this.scale, grey));
+		for (let i = 0; i < this.sizeX; i++) {
+			this.boxes[this.sizeY].push(new Cell(i, this.scale, grey));
 		}
 		this.spawn();
 		this.update();
@@ -176,7 +181,7 @@ class Tetris {
 		this.activeCoord = this.nextActiveCoord;
 		this.nextActiveMaterial = colors[floor(random(colors.length))];
 		this.nextActiveType = floor(random(6));
-		this.nextActiveCoord = createVector(SIZE_X / 2, 1);
+		this.nextActiveCoord = createVector(this.sizeX / 2, 1);
 		this.renderActive();
 	}
 
@@ -223,9 +228,9 @@ class Tetris {
 	}
 
 	renderBorder() {
-		for (let i = 0; i < SIZE_Y; i++) {
+		for (let i = 0; i < this.sizeY; i++) {
 			Cell.display(-1, i, this.scale, grey);
-			Cell.display(SIZE_X, i, this.scale, grey);
+			Cell.display(this.sizeX, i, this.scale, grey);
 		}
 	}
 
@@ -280,7 +285,7 @@ class Tetris {
 	checkForScore() {
 		let combo = 0;
 		for (let i = this.boxes.length - 2; i >= 0; i--) {
-			if (this.boxes[i].length == SIZE_X) {
+			if (this.boxes[i].length == this.sizeX) {
 				this.boxes.splice(i, 1);
 				this.boxes.unshift([]);
 				combo++;
@@ -309,13 +314,13 @@ class Tetris {
 	checkWallOnMove(dir, coords) {
 		if (dir == LEFT || dir == RIGHT) {
 			for (let coord of coords) {
-				if (coord.x == -1 || coord.x == SIZE_X) return WALL;
+				if (coord.x == -1 || coord.x == this.sizeX) return WALL;
 			}
 		}
 
 		if (dir == DOWN) {
 			for (let coord of coords) {
-				if (coord.y >= SIZE_Y) return SPAWN;
+				if (coord.y >= this.sizeY) return SPAWN;
 			}
 		}
 
@@ -342,14 +347,6 @@ class Tetris {
 		this.rotation = after;
 	}
 
-	getIndexes(type, index, rotation) {
-		let result = [];
-		for (let i = 0; i < this.shapesOffsets[type][rotation].length; i++) {
-			result.push(index + this.shapesOffsets[type][rotation][i]);
-		}
-		return result;
-	}
-
 	getCoords(type, center, rotation) {
 		let result = [];
 		for (let i = 0; i < this.shapesOffsets[type][rotation].length; i++) {
@@ -373,7 +370,7 @@ class Tetris {
 	checkWallOnRotation() {
 		if (
 			this.activeCoord.x <= 0 ||
-			this.activeCoord.x >= SIZE_X - (this.activeType == 1 ? 2 : 1)
+			this.activeCoord.x >= this.sizeX - (this.activeType == 1 ? 2 : 1)
 		)
 			return WALL;
 		return MOVE;
@@ -386,9 +383,9 @@ class Tetris {
 		fill(255);
 		textSize(this.scale);
 		textAlign(CENTER);
-		text("Game Over", w / 2, height / 2);
+		text("Game Over", this.width / 2, height / 2);
 		textSize(this.scale * 0.7);
-		text("Score: " + this.score, w / 2, height / 2 + tetris.scale);
+		text("Score: " + this.score, this.width / 2, height / 2 + tetris.scale);
 		pop();
 		this.isGameOver = true;
 	}
@@ -415,7 +412,7 @@ class Tetris {
 			this.activeCoord,
 			this.rotation
 		);
-		let minDistance = SIZE_Y;
+		let minDistance = this.sizeY;
 		for (let coord of coords) {
 			let hit = false;
 			for (let i = coord.y + 1; i < this.boxes.length; i++) {

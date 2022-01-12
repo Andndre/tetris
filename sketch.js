@@ -1,22 +1,14 @@
 var tetris, autoMoveDown;
 var loaded = false;
 var music;
-var w, h;
 
 function setup() {
 	music = document.getElementById("music");
-	w = windowHeight / (SIZE_Y * 0.1);
-	if (w > windowWidth) {
-		w = windowWidth * 0.9;
-	}
-
-	h = w * (SIZE_Y * 0.1);
+	tetris = new Tetris(10, 24);
 
 	createCanvas(windowWidth, windowHeight);
 	autoMoveDown = true;
-	// colorMode(HSB);
-	background(57, 255 * 0.035, 255 * 0.2);
-	tetris = new Tetris(10, 20);
+	background(0);
 	frameRate(1.4);
 	strokeWeight(tetris.scale * 0.03);
 	stroke(0);
@@ -25,7 +17,7 @@ function setup() {
 
 function draw() {
 	background(0);
-	translate(createVector(width / 2 - w / 2, 0));
+	translate(createVector(width / 2 - tetris.width / 2, 0));
 	tetris.update(autoMoveDown);
 }
 
