@@ -1,15 +1,23 @@
 var tetris, autoMoveDown;
 var loaded = false;
+var fps = 1.4;
 var music;
+var playImg;
+var screen;
+var blockyFont;
+
+function preload() {
+	playImg = loadImage("assets/play.png");
+	blockyFont = loadFont("assets/origa___.ttf");
+}
 
 function setup() {
 	music = document.getElementById("music");
 	tetris = new Tetris(10, 24);
-
-	createCanvas(windowWidth, windowHeight);
+	screen = new TetrisScreen();
 	autoMoveDown = true;
-	background(0);
-	frameRate(1.4);
+	textFont(blockyFont);
+	frameRate(fps);
 	strokeWeight(tetris.scale * 0.03);
 	stroke(0);
 	loaded = true;
@@ -17,13 +25,18 @@ function setup() {
 
 function draw() {
 	background(0);
-	translate(createVector(width / 2 - tetris.width / 2, 0));
-	tetris.update(autoMoveDown);
+	push();
+	screen.render();
+	pop();
+}
+
+function mouseClicked() {
+	screen.mouseClicked();
 }
 
 function keyTyped() {
-	if (!loaded) return;
-	if (tetris.isGameOver) return;
+	if (!loaded || tetris.isGameOver || screen.currentScreen != STATE_IN_GAME)
+		return;
 	if (key == "q") {
 		tetris.rotate(LEFT);
 	} else if (key == "e") {
@@ -42,7 +55,8 @@ function keyTyped() {
 }
 
 function keyPressed() {
-	if (!loaded) return;
+	if (!loaded || tetris.isGameOver || screen.currentScreen != STATE_IN_GAME)
+		return;
 	if (tetris.isGameOver) return;
 	if (keyCode == 37) {
 		tetris.move(LEFT);

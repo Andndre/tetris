@@ -11,15 +11,6 @@ let colors = [
 	"#f0118c",
 ];
 
-// Not to change
-const LEFT = -1;
-const RIGHT = 1;
-const DOWN = 0;
-const GAMEOVER = -1;
-const WALL = 0;
-const MOVE = 1;
-const SPAWN = 2;
-
 class Tetris {
 	constructor(sizeX, sizeY) {
 		this.sizeX = sizeX;
@@ -153,14 +144,14 @@ class Tetris {
 		this.height = this.width * (this.sizeY * 0.1);
 		this.scale = this.width / this.sizeX;
 		this.boxes = [];
-		this.activeMaterial = colors[floor(random(colors.length))];
+		this.activeMaterial = random(colors);
 		this.activeType = floor(random(6));
 		this.activeCoord = createVector(0, 0);
 		this.isGameOver = false;
 		this.rotation = 0;
 		this.score = 0;
 		this.nextActiveType = floor(random(6));
-		this.nextActiveMaterial = colors[floor(random(colors.length))];
+		this.nextActiveMaterial = random(colors);
 		this.nextActiveCoord = createVector(this.sizeX / 2, 1);
 
 		for (let i = 0; i <= this.sizeY; i++) {
@@ -174,6 +165,20 @@ class Tetris {
 		this.update();
 	}
 
+	restart() {
+		this.boxes = [];
+		for (let i = 0; i <= this.sizeY; i++) {
+			this.boxes.push([]);
+		}
+
+		for (let i = 0; i < this.sizeX; i++) {
+			this.boxes[this.sizeY].push(new Cell(i, this.scale, grey));
+		}
+		this.score = 0;
+		this.isGameOver = false;
+		this.spawn();
+	}
+
 	spawn() {
 		this.rotation = 0;
 		this.activeMaterial = this.nextActiveMaterial;
@@ -185,10 +190,10 @@ class Tetris {
 		this.renderActive();
 	}
 
-	display(overlay) {
+	render() {
 		for (let i = 0; i < this.boxes.length; i++) {
 			for (let j = 0; j < this.boxes[i].length; j++) {
-				this.boxes[i][j].display(overlay, i);
+				this.boxes[i][j].display(i);
 			}
 		}
 	}
@@ -200,13 +205,7 @@ class Tetris {
 			this.rotation
 		);
 		for (let coord of coords) {
-			Cell.display(
-				coord.x,
-				coord.y,
-				this.scale,
-				this.activeMaterial,
-				false
-			);
+			Cell.display(coord.x, coord.y, this.scale, this.activeMaterial);
 		}
 	}
 
@@ -376,30 +375,17 @@ class Tetris {
 		return MOVE;
 	}
 
-	gameOver() {
-		noLoop();
-		this.display(true);
-		push();
-		fill(255);
-		textSize(this.scale);
-		textAlign(CENTER);
-		text("Game Over", this.width / 2, height / 2);
-		textSize(this.scale * 0.7);
-		text("Score: " + this.score, this.width / 2, height / 2 + tetris.scale);
-		pop();
-		this.isGameOver = true;
-	}
-
 	update(mv) {
-		this.display(this.isGameOver);
+		this.render();
 		if (this.isGameOver) {
-			this.gameOver();
+			screen.currentScreen = STATE_GAMEOVER;
+			redraw();
+			return;
 		} else {
 			this.updateScore();
 		}
 		if (mv) this.move(DOWN);
 		autoMoveDown = true;
-		// this.renderDropped();
 		this.renderActive();
 		this.checkForScore();
 		this.renderNext();
@@ -442,7 +428,11 @@ class Tetris {
 
 	updateScore() {
 		fill(255);
-		textSize(this.scale * 0.5);
-		text("Score: " + this.score, 20, this.scale);
+		textSize(this.scale);
+		text(
+			"Score: " + this.score,
+			this.width + this.scale * 3,
+			this.scale * 1.5
+		);
 	}
 }
