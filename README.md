@@ -30,6 +30,8 @@ Learn more about Tetris on [wikipedia](https://en.wikipedia.org/wiki/Tetris)
 - You may be required to refresh (<kbd>CTRL</kbd> + <kbd>R</kbd>) when resizing the browser window
 
 ### Screenshots
-<img src="https://user-images.githubusercontent.com/81848639/148924738-43006424-662c-4e9c-b13a-d1b616852aa8.png" alt="gameplay1" width=400></img><br>
+<img src="https://user-images.githubusercontent.com/81848639/149625472-43919025-234e-4214-b7f6-2ae74dfd8a32.png" alt="gameplay1" width=400></img><br>
 
-<img src="https://user-images.githubusercontent.com/81848639/148924969-ba16340e-3c19-4806-9ffb-1edfbcd6f4a5.png" alt="gameplay2" width=400></img>
+<img src="https://user-images.githubusercontent.com/81848639/149625473-9e97a3e9-8fd1-4863-aa1d-0035d00d1824.png" alt="gameplay2" width=400></img>
+
+<img src="https://user-images.githubusercontent.com/81848639/149625474-dd37af25-1402-400c-90c1-37314df439f5.png" alt="gameplay2" width=400></img>
