@@ -2,57 +2,63 @@ class TetrisScreen {
 	constructor() {
 		this.currentScreen = STATE_MAIN_MENU;
 		this.playButton = new ImgButton(
-			createVector(width / 2 - tetris.scale, height / 2 - tetris.scale),
+			createVector(
+				width / 2 - tetris.scale * 2,
+				height / 2 - tetris.scale * 2
+			),
 			playArrImg,
-			createVector(tetris.scale * 2, tetris.scale * 2),
+			createVector(tetris.scale * 4, tetris.scale * 4),
 			null,
 			STATE_MAIN_MENU
 		);
 
 		this.retryButton = new ImgButton(
-			createVector(width / 2 - tetris.scale, height / 2 - tetris.scale),
+			createVector(
+				width / 2 - tetris.scale * 2,
+				height / 2 - tetris.scale * 2
+			),
 			playArrImg,
-			createVector(tetris.scale * 2, tetris.scale * 2),
+			createVector(tetris.scale * 4, tetris.scale * 4),
 			null,
 			STATE_GAMEOVER
 		);
 
 		this.leftButton = new ImgButton(
-			createVector(tetris.scale, height - tetris.scale * 2),
+			createVector(tetris.scale * 3, height - tetris.scale * 5),
 			leftArrImg,
-			createVector(tetris.scale * 2, tetris.scale * 2),
+			createVector(tetris.scale * 4, tetris.scale * 4),
 			null,
 			STATE_IN_GAME
 		);
 
 		this.rightButton = new ImgButton(
-			createVector(width - tetris.scale * 2, height - tetris.scale * 2),
+			createVector(width - tetris.scale * 8, height - tetris.scale * 5),
 			rightArrImg,
-			createVector(tetris.scale * 2, tetris.scale * 2),
+			createVector(tetris.scale * 4, tetris.scale * 4),
 			null,
 			STATE_IN_GAME
 		);
 
 		this.rotateButton = new ImgButton(
-			createVector(tetris.scale * 4, height - tetris.scale * 2),
+			createVector(tetris.scale * 8, height - tetris.scale * 5),
 			rotateImg,
-			createVector(tetris.scale * 2, tetris.scale * 2),
+			createVector(tetris.scale * 4, tetris.scale * 4),
 			null,
 			STATE_IN_GAME
 		);
 
 		this.downButton = new ImgButton(
-			createVector(width - tetris.scale * 5, height - tetris.scale * 2),
+			createVector(width - tetris.scale * 13, height - tetris.scale * 5),
 			downArrImg,
-			createVector(tetris.scale * 2, tetris.scale * 2),
+			createVector(tetris.scale * 4, tetris.scale * 4),
 			null,
 			STATE_IN_GAME
 		);
 
 		this.hardDropButton = new ImgButton(
-			createVector(width - tetris.scale * 8, height - tetris.scale * 2),
+			createVector(width - tetris.scale * 8, height - tetris.scale * 10),
 			hardDropImg,
-			createVector(tetris.scale * 2, tetris.scale * 2),
+			createVector(tetris.scale * 4, tetris.scale * 4),
 			null,
 			STATE_IN_GAME
 		);
