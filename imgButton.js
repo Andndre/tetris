@@ -1,6 +1,6 @@
 class ImgButton extends Button {
-	constructor(pos, img, size, onClick, screen) {
-		super(pos, size, onClick, screen);
+	constructor(pos, img, size, onClick, screenIndex) {
+		super(pos, size, onClick, screenIndex);
 		this.img = img;
 	}
 

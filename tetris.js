@@ -13,8 +13,10 @@ let colors = [
 
 class Tetris {
 	constructor(sizeX, sizeY) {
+		this.highScore = localStorage.getItem("highscore") || 0;
 		this.sizeX = sizeX;
 		this.sizeY = sizeY;
+
 		this.shapesOffsets = [
 			// O
 			[
@@ -150,6 +152,9 @@ class Tetris {
 		this.isGameOver = false;
 		this.rotation = 0;
 		this.score = 0;
+		this.lines = 0;
+		this.level = 0;
+		frameRate(PAL_FPS[this.level]);
 		this.nextActiveType = floor(random(6));
 		this.nextActiveMaterial = random(colors);
 		this.nextActiveCoord = createVector(this.sizeX / 2, 1);
@@ -176,6 +181,7 @@ class Tetris {
 		}
 		this.score = 0;
 		this.isGameOver = false;
+		this.level = 1;
 		this.spawn();
 	}
 
@@ -184,7 +190,7 @@ class Tetris {
 		this.activeMaterial = this.nextActiveMaterial;
 		this.activeType = this.nextActiveType;
 		this.activeCoord = this.nextActiveCoord;
-		this.nextActiveMaterial = colors[floor(random(colors.length))];
+		this.nextActiveMaterial = random(colors);
 		this.nextActiveType = floor(random(6));
 		this.nextActiveCoord = createVector(this.sizeX / 2, 1);
 		this.renderActive();
@@ -193,7 +199,7 @@ class Tetris {
 	render() {
 		for (let i = 0; i < this.boxes.length; i++) {
 			for (let j = 0; j < this.boxes[i].length; j++) {
-				this.boxes[i][j].display(i);
+				this.boxes[i][j].render(i);
 			}
 		}
 	}
@@ -205,19 +211,26 @@ class Tetris {
 			this.rotation
 		);
 		for (let coord of coords) {
-			Cell.display(coord.x, coord.y, this.scale, this.activeMaterial);
+			Cell.render(coord.x, coord.y, this.scale, this.activeMaterial);
 		}
 	}
 
 	renderNext() {
+		push();
+		fill(255);
+		textSize(this.scale * 1.1);
+		text("Next", -this.scale * 6.5, this.scale * 1.5);
+		pop();
+
 		let coords = this.getCoords(
 			this.nextActiveType,
 			this.nextActiveCoord,
 			0
 		);
+
 		for (let coord of coords) {
-			Cell.display(
-				coord.x - 10,
+			Cell.render(
+				coord.x - 10.5,
 				coord.y + 3,
 				this.scale,
 				this.nextActiveMaterial,
@@ -228,8 +241,8 @@ class Tetris {
 
 	renderBorder() {
 		for (let i = 0; i < this.sizeY; i++) {
-			Cell.display(-1, i, this.scale, grey);
-			Cell.display(this.sizeX, i, this.scale, grey);
+			Cell.render(-1, i, this.scale, grey);
+			Cell.render(this.sizeX, i, this.scale, grey);
 		}
 	}
 
@@ -247,6 +260,8 @@ class Tetris {
 		);
 		let after = this.getCoords(this.activeType, newCoord, this.rotation);
 		let wall = this.checkWallOnMove(dir, after);
+
+		if (dir == DOWN) this.score++;
 
 		if (wall == WALL) return;
 		if (wall == SPAWN) {
@@ -288,25 +303,62 @@ class Tetris {
 				this.boxes.splice(i, 1);
 				this.boxes.unshift([]);
 				combo++;
+				this.lines++;
 				i++;
 			}
 		}
 		switch (combo) {
 			case 0:
-				break;
+				return;
 			case 1:
-				this.score += 40;
+				this.score += 100 * this.level;
 				break;
 			case 2:
-				this.score += 100;
+				this.score += 300 * this.level;
 				break;
 			case 3:
-				this.score += 300;
+				this.score += 500 * this.level;
 				break;
 			case 4:
 			default:
-				this.score += 1200;
+				this.score += 800 * this.level;
 				break;
+		}
+		let cleared = true;
+
+		for (let arr of this.boxes) {
+			if (arr.length != 0) {
+				cleared = false;
+				break;
+			}
+		}
+
+		if (cleared) {
+			switch (combo) {
+				case 1:
+					this.score += 800 * this.level;
+					break;
+				case 2:
+					this.score += 1200 * this.level;
+					break;
+				case 3:
+					this.score += 1800 * this.level;
+					break;
+				case 4:
+				default:
+					this.score += 2000 * this.level;
+					break;
+			}
+		}
+
+		if (this.lines >= 10 * this.level + 5) {
+			this.level++;
+			fps = PAL_FPS[this.level];
+			frameRate(fps);
+		}
+		if (this.score > this.highScore) {
+			this.highScore = this.score;
+			localStorage.setItem("highscore", this.score);
 		}
 	}
 
@@ -378,11 +430,11 @@ class Tetris {
 	update(mv) {
 		this.render();
 		if (this.isGameOver) {
-			screen.currentScreen = STATE_GAMEOVER;
+			tetrisScreen.currentScreen = STATE_GAMEOVER;
 			redraw();
 			return;
 		} else {
-			this.updateScore();
+			this.updateStats();
 		}
 		if (mv) this.move(DOWN);
 		autoMoveDown = true;
@@ -413,6 +465,8 @@ class Tetris {
 			}
 		}
 
+		this.score += 2 * minDistance;
+
 		for (let i = 0; i < coords.length; i++) {
 			coords[i].y += minDistance;
 		}
@@ -426,13 +480,21 @@ class Tetris {
 		this.update();
 	}
 
-	updateScore() {
+	updateStats() {
+		push();
 		fill(255);
+		textSize(this.scale * 1.1);
+		let xPos = this.width + this.scale * 3;
+		text("Score", xPos, this.scale * 1.5);
+		text("Lines", xPos, this.scale * 3.5);
+		text("Level", xPos, this.scale * 5.5);
 		textSize(this.scale);
-		text(
-			"Score: " + this.score,
-			this.width + this.scale * 3,
-			this.scale * 1.5
-		);
+		fill(color(colors[3]));
+		text("" + this.score, xPos, this.scale * 2.5);
+		fill(color(colors[1]));
+		text("" + this.lines, xPos, this.scale * 4.5);
+		fill(color(colors[0]));
+		text("" + this.level, xPos, this.scale * 6.5);
+		pop();
 	}
 }

@@ -1,7 +1,7 @@
 class Button {
-	constructor(pos, size, onClick, screen) {
+	constructor(pos, size, onClick, screenIndex) {
 		this.pos = pos;
-		this.screen = screen;
+		this.screenIndex = screenIndex;
 		this.onClick = onClick;
 		this.size = size;
 	}
@@ -24,7 +24,7 @@ class Button {
 	}
 
 	checkScreen() {
-		return this.screen == screen.currentScreen;
+		return this.screenIndex == tetrisScreen.currentScreen;
 	}
 
 	check() {

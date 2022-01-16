@@ -16,22 +16,39 @@ Learn more about Tetris on [wikipedia](https://en.wikipedia.org/wiki/Tetris)
 
 ### Scoring system
 
-- Line clear scores
+- Action scores
 
-  | Line clear | Points |
+  | Action | Scores |
   | ---------- | ------ |
-  | 1 (single) | 40 |
-  | 2 (double) | 100 |
-  | 3 (triple) | 300 |
-  | 4 (tetris) | 1200 |
+  | 1 (single) | 100 x level |
+  | 2 (double) | 300 x level |
+  | 3 (triple) | 500 x level |
+  | 4 (tetris) | 800 x level |
+  | Single-line perfect clear |	800 × level |
+  | Double-line perfect clear | 1200 × level |
+  | Triple-line perfect clear |	1800 × level |
+  | Tetris perfect clear | 2000 × level |
+  | Soft drop | 1 per cell |
+  | Hard drop | 2 per cell |
+
+- Leveling
+
+  `level` increases if `lines` is greater than or equal to `level * 10 + 5`
 
 ### Troubleshoot
 
 - You may be required to refresh (<kbd>CTRL</kbd> + <kbd>R</kbd>) when resizing the browser window
 
 ### Screenshots
-<img src="https://user-images.githubusercontent.com/81848639/149625472-43919025-234e-4214-b7f6-2ae74dfd8a32.png" alt="gameplay1" width=400></img><br>
 
-<img src="https://user-images.githubusercontent.com/81848639/149625473-9e97a3e9-8fd1-4863-aa1d-0035d00d1824.png" alt="gameplay2" width=400></img>
+*main menu*
 
-<img src="https://user-images.githubusercontent.com/81848639/149625474-dd37af25-1402-400c-90c1-37314df439f5.png" alt="gameplay2" width=400></img>
+<img src="https://user-images.githubusercontent.com/81848639/149643468-7f550c36-959e-4295-868c-2522980ce6a6.png" alt="gameplay1" width=400></img><br>
+
+*in-game*
+
+<img src="https://user-images.githubusercontent.com/81848639/149643470-c7444d43-02ee-446c-bf53-4fe5c4bc0072.png" alt="gameplay2" width=400></img>
+
+*game-over*
+
+<img src="https://user-images.githubusercontent.com/81848639/149643471-d9fa63be-ea90-4da2-a272-d65d7e699fae.png" alt="gameplay2" width=400></img>

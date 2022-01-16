@@ -1,20 +1,34 @@
-var tetris, autoMoveDown;
-var loaded = false;
-var fps = 1.4;
-var music;
-var playImg;
-var screen;
-var blockyFont;
+let tetris, autoMoveDown;
+let loaded = false;
+let fps = PAL_FPS[0];
+
+let music;
+let playArrImg;
+let leftArrImg;
+let rightArrImg;
+let downArrImg;
+let rotateImg;
+let hardDropImg;
+let blockyFont;
+let tetrisScreen;
 
 function preload() {
-	playImg = loadImage("assets/play.png");
-	blockyFont = loadFont("assets/origa___.ttf");
+	playArrImg = loadImage("assets/play.png");
+
+	leftArrImg = loadImage("assets/arrow_left_15601.png");
+	rightArrImg = loadImage("assets/arrow_right_15600.png");
+	downArrImg = loadImage("assets/arrowdown_flech_1539.png");
+	rotateImg = loadImage("assets/refresh_arrow_1546.png");
+	hardDropImg = loadImage("assets/28_Drop_Box_24258.png");
+
+	blockyFont = loadFont("assets/clacon2.ttf");
 }
 
 function setup() {
+	createCanvas(windowWidth, windowHeight);
 	music = document.getElementById("music");
 	tetris = new Tetris(10, 24);
-	screen = new TetrisScreen();
+	tetrisScreen = new TetrisScreen();
 	autoMoveDown = true;
 	textFont(blockyFont);
 	frameRate(fps);
@@ -26,16 +40,20 @@ function setup() {
 function draw() {
 	background(0);
 	push();
-	screen.render();
+	tetrisScreen.render();
 	pop();
 }
 
 function mouseClicked() {
-	screen.mouseClicked();
+	tetrisScreen.mouseClicked();
 }
 
 function keyTyped() {
-	if (!loaded || tetris.isGameOver || screen.currentScreen != STATE_IN_GAME)
+	if (
+		!loaded ||
+		tetris.isGameOver ||
+		tetrisScreen.currentScreen != STATE_IN_GAME
+	)
 		return;
 	if (key == "q") {
 		tetris.rotate(LEFT);
@@ -55,7 +73,11 @@ function keyTyped() {
 }
 
 function keyPressed() {
-	if (!loaded || tetris.isGameOver || screen.currentScreen != STATE_IN_GAME)
+	if (
+		!loaded ||
+		tetris.isGameOver ||
+		tetrisScreen.currentScreen != STATE_IN_GAME
+	)
 		return;
 	if (tetris.isGameOver) return;
 	if (keyCode == 37) {

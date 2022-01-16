@@ -5,11 +5,11 @@ class Cell {
 		this.hex = hex;
 	}
 
-	static display(x, y, scale, hex) {
+	static render(x, y, scale, hex) {
 		push();
 		let coords = createVector(x * scale, y * scale);
 		let col = color(hex);
-		let dist = scale * 0.1;
+		let dist = scale * 0.06;
 		noStroke();
 		// upper triangle
 		fill(brighten(hex, 40));
@@ -33,8 +33,8 @@ class Cell {
 		pop();
 	}
 
-	display(y) {
-		Cell.display(this.x, y, this.scale, this.hex);
+	render(y) {
+		Cell.render(this.x, y, this.scale, this.hex);
 	}
 }
 
@@ -53,9 +53,9 @@ function brighten(hex, percent) {
 function spreadCells(count) {
 	for (let i = 0; i < count; i++) {
 		let col = darken(random(colors), 60);
-		Cell.display(
-			floor(random(1, floor(width / tetris.scale))),
-			floor(random(1, floor(height / tetris.scale))),
+		Cell.render(
+			ceil(random(0, width / tetris.scale)),
+			ceil(random(0, height / tetris.scale)),
 			tetris.scale,
 			col
 		);
