@@ -5,6 +5,7 @@ const DOWN = 0;
 const STATE_MAIN_MENU = 0;
 const STATE_IN_GAME = 1;
 const STATE_GAMEOVER = 2;
+const STATE_GLOBAL = 3;
 
 const GAMEOVER = -1;
 const WALL = 0;

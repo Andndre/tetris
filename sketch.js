@@ -9,8 +9,41 @@ let rightArrImg;
 let downArrImg;
 let rotateImg;
 let hardDropImg;
+let fullScreenImg;
+
 let blockyFont;
 let tetrisScreen;
+
+function toggleFullscreen(elem) {
+	elem = elem || document.documentElement;
+
+	if (
+		!document.fullscreenElement &&
+		!document.mozFullScreenElement &&
+		!document.webkitFullscreenElement &&
+		!document.msFullscreenElement
+	) {
+		if (elem.requestFullscreen) {
+			elem.requestFullscreen();
+		} else if (elem.msRequestFullscreen) {
+			elem.msRequestFullscreen();
+		} else if (elem.mozRequestFullScreen) {
+			elem.mozRequestFullScreen();
+		} else if (elem.webkitRequestFullscreen) {
+			elem.webkitRequestFullscreen(Element.ALLOW_KEYBOARD_INPUT);
+		}
+	} else {
+		if (document.exitFullscreen) {
+			document.exitFullscreen();
+		} else if (document.msExitFullscreen) {
+			document.msExitFullscreen();
+		} else if (document.mozCancelFullScreen) {
+			document.mozCancelFullScreen();
+		} else if (document.webkitExitFullscreen) {
+			document.webkitExitFullscreen();
+		}
+	}
+}
 
 function preload() {
 	playArrImg = loadImage("assets/play.png");
@@ -20,6 +53,9 @@ function preload() {
 	downArrImg = loadImage("assets/arrowdown_flech_1539.png");
 	rotateImg = loadImage("assets/refresh_arrow_1546.png");
 	hardDropImg = loadImage("assets/28_Drop_Box_24258.png");
+	fullScreenImg = loadImage(
+		"assets/full-full-screen-layout-orientation-expand-screen_81433.png"
+	);
 
 	blockyFont = loadFont("assets/clacon2.ttf");
 }
@@ -35,6 +71,8 @@ function setup() {
 	strokeWeight(tetris.scale * 0.03);
 	stroke(0);
 	loaded = true;
+	background(0);
+	tetrisScreen.render();
 }
 
 function draw() {
@@ -92,5 +130,13 @@ function keyPressed() {
 		tetris.hardDrop();
 	}
 	autoMoveDown = false;
+	redraw();
+}
+
+function windowResized() {
+	autoMoveDown = false;
+	tetris.onResized();
+	autoMoveDown = false;
+	tetrisScreen.onResized();
 	redraw();
 }

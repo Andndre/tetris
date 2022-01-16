@@ -1,4 +1,3 @@
-let showCellNumber = false;
 let grey = "#6e6e6e";
 let colors = [
 	"#f02011",
@@ -139,13 +138,8 @@ class Tetris {
 				],
 			],
 		];
-		this.width = windowHeight / (this.sizeY * 0.1);
-		if (this.width > windowWidth) {
-			this.width = windowWidth * 0.9;
-		}
-		this.height = this.width * (this.sizeY * 0.1);
-		this.scale = this.width / this.sizeX;
 		this.boxes = [];
+		this.onResized();
 		this.activeMaterial = random(colors);
 		this.activeType = floor(random(6));
 		this.activeCoord = createVector(0, 0);
@@ -170,6 +164,22 @@ class Tetris {
 		this.update();
 	}
 
+	onResized() {
+		autoMoveDown = false;
+		resizeCanvas(windowWidth, windowHeight);
+		this.width = windowHeight / (this.sizeY * 0.1);
+		if (this.width > windowWidth) {
+			this.width = windowWidth * 0.9;
+		}
+		this.height = this.width * (this.sizeY * 0.1);
+		this.scale = this.width / this.sizeX;
+		for (let row of this.boxes) {
+			for (let box of row) {
+				box.scale = this.scale;
+			}
+		}
+	}
+
 	restart() {
 		this.boxes = [];
 		for (let i = 0; i <= this.sizeY; i++) {
@@ -181,7 +191,8 @@ class Tetris {
 		}
 		this.score = 0;
 		this.isGameOver = false;
-		this.level = 1;
+		this.level = 0;
+		fps = PAL_FPS[this.level];
 		this.spawn();
 	}
 
@@ -261,7 +272,13 @@ class Tetris {
 		let after = this.getCoords(this.activeType, newCoord, this.rotation);
 		let wall = this.checkWallOnMove(dir, after);
 
-		if (dir == DOWN) this.score++;
+		if (dir == DOWN) {
+			this.score++;
+			if (this.score > this.highScore) {
+				this.highScore = this.score;
+				localStorage.setItem("highscore", this.score);
+			}
+		}
 
 		if (wall == WALL) return;
 		if (wall == SPAWN) {

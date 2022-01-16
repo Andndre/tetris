@@ -1,9 +1,15 @@
 class Button {
-	constructor(pos, size, onClick, screenIndex) {
-		this.pos = pos;
+	constructor(init, onClick, screenIndex) {
+		this.init = () => {
+			[this.pos, this.size] = init();
+		};
+		this.init();
 		this.screenIndex = screenIndex;
 		this.onClick = onClick;
-		this.size = size;
+	}
+
+	refresh() {
+		this.init();
 	}
 
 	click() {
@@ -24,7 +30,10 @@ class Button {
 	}
 
 	checkScreen() {
-		return this.screenIndex == tetrisScreen.currentScreen;
+		return (
+			this.screenIndex == tetrisScreen.currentScreen ||
+			this.screenIndex == STATE_GLOBAL
+		);
 	}
 
 	check() {

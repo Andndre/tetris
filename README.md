@@ -35,20 +35,16 @@ Learn more about Tetris on [wikipedia](https://en.wikipedia.org/wiki/Tetris)
 
   `level` increases if `lines` is greater than or equal to `level * 10 + 5`
 
-### Troubleshoot
-
-- You may be required to refresh (<kbd>CTRL</kbd> + <kbd>R</kbd>) when resizing the browser window
-
 ### Screenshots
 
 *main menu*
 
-<img src="https://user-images.githubusercontent.com/81848639/149643468-7f550c36-959e-4295-868c-2522980ce6a6.png" alt="gameplay1" width=400></img><br>
+<img src="https://user-images.githubusercontent.com/81848639/149655047-546ca60e-6cba-4f09-ab4e-974b31cee1d5.png" alt="gameplay1" width=400></img><br>
 
 *in-game*
 
-<img src="https://user-images.githubusercontent.com/81848639/149643470-c7444d43-02ee-446c-bf53-4fe5c4bc0072.png" alt="gameplay2" width=400></img>
+<img src="https://user-images.githubusercontent.com/81848639/149655050-9cd92376-6694-4753-81cb-4c9951206a2f.png" alt="gameplay2" width=400></img>
 
 *game-over*
 
-<img src="https://user-images.githubusercontent.com/81848639/149643471-d9fa63be-ea90-4da2-a272-d65d7e699fae.png" alt="gameplay2" width=400></img>
+<img src="https://user-images.githubusercontent.com/81848639/149655051-03307b08-5976-4b3c-be98-b6df9cbf2af3.png" alt="gameplay2" width=400></img>

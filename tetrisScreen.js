@@ -2,65 +2,100 @@ class TetrisScreen {
 	constructor() {
 		this.currentScreen = STATE_MAIN_MENU;
 		this.playButton = new ImgButton(
-			createVector(
-				width / 2 - tetris.scale * 2,
-				height / 2 - tetris.scale * 2
-			),
+			() => [
+				createVector(
+					width / 2 - tetris.scale * 2,
+					height / 2 - tetris.scale * 2
+				),
+				createVector(tetris.scale * 4, tetris.scale * 4),
+			],
 			playArrImg,
-			createVector(tetris.scale * 4, tetris.scale * 4),
 			null,
 			STATE_MAIN_MENU
 		);
 
 		this.retryButton = new ImgButton(
-			createVector(
-				width / 2 - tetris.scale * 2,
-				height / 2 - tetris.scale * 2
-			),
+			() => [
+				createVector(
+					width / 2 - tetris.scale * 2,
+					height / 2 - tetris.scale * 2
+				),
+				createVector(tetris.scale * 4, tetris.scale * 4),
+			],
 			playArrImg,
-			createVector(tetris.scale * 4, tetris.scale * 4),
 			null,
 			STATE_GAMEOVER
 		);
 
-		this.leftButton = new ImgButton(
-			createVector(tetris.scale * 3, height - tetris.scale * 5),
-			leftArrImg,
-			createVector(tetris.scale * 4, tetris.scale * 4),
+		this.downButton = new ImgButton(
+			() => [
+				createVector(tetris.scale * 3, height - tetris.scale * 5),
+				createVector(tetris.scale * 4, tetris.scale * 4),
+			],
+			downArrImg,
 			null,
 			STATE_IN_GAME
 		);
 
 		this.rightButton = new ImgButton(
-			createVector(width - tetris.scale * 8, height - tetris.scale * 5),
+			() => [
+				createVector(
+					width - tetris.scale * 8,
+					height - tetris.scale * 5
+				),
+				createVector(tetris.scale * 4, tetris.scale * 4),
+			],
 			rightArrImg,
-			createVector(tetris.scale * 4, tetris.scale * 4),
-			null,
-			STATE_IN_GAME
-		);
-
-		this.rotateButton = new ImgButton(
-			createVector(tetris.scale * 8, height - tetris.scale * 5),
-			rotateImg,
-			createVector(tetris.scale * 4, tetris.scale * 4),
-			null,
-			STATE_IN_GAME
-		);
-
-		this.downButton = new ImgButton(
-			createVector(width - tetris.scale * 13, height - tetris.scale * 5),
-			downArrImg,
-			createVector(tetris.scale * 4, tetris.scale * 4),
 			null,
 			STATE_IN_GAME
 		);
 
 		this.hardDropButton = new ImgButton(
-			createVector(width - tetris.scale * 8, height - tetris.scale * 10),
+			() => [
+				createVector(tetris.scale * 8, height - tetris.scale * 5),
+				createVector(tetris.scale * 4, tetris.scale * 4),
+			],
 			hardDropImg,
-			createVector(tetris.scale * 4, tetris.scale * 4),
 			null,
 			STATE_IN_GAME
+		);
+
+		this.leftButton = new ImgButton(
+			() => [
+				createVector(
+					width - tetris.scale * 13,
+					height - tetris.scale * 5
+				),
+				createVector(tetris.scale * 4, tetris.scale * 4),
+			],
+			leftArrImg,
+			null,
+			STATE_IN_GAME
+		);
+
+		this.rotateButton = new ImgButton(
+			() => [
+				createVector(
+					width - tetris.scale * 10.5,
+					height - tetris.scale * 10
+				),
+				createVector(tetris.scale * 4, tetris.scale * 4),
+			],
+			rotateImg,
+			null,
+			STATE_IN_GAME
+		);
+
+		this.toggleFullScreenButton = new ImgButton(
+			() => [
+				createVector(width - tetris.scale * 4, tetris.scale),
+				createVector(tetris.scale * 3, tetris.scale * 3),
+			],
+			fullScreenImg,
+			() => {
+				toggleFullscreen();
+			},
+			STATE_GLOBAL
 		);
 
 		this.downButton.onClick = function () {
@@ -92,7 +127,7 @@ class TetrisScreen {
 		};
 
 		this.rotateButton.onClick = function () {
-			tetris.rotate(RIGHT);
+			tetris.rotate(LEFT);
 			autoMoveDown = false;
 			redraw();
 		};
@@ -117,7 +152,14 @@ class TetrisScreen {
 			this.leftButton,
 			this.rightButton,
 			this.hardDropButton,
+			this.toggleFullScreenButton,
 		];
+	}
+
+	onResized() {
+		for (let button of this.buttons) {
+			button.refresh();
+		}
 	}
 
 	mouseClicked() {
@@ -151,6 +193,7 @@ class TetrisScreen {
 		text("High Score: " + tetris.highScore, width / 2, tetris.scale * 7);
 		pop();
 		this.playButton.render();
+		this.toggleFullScreenButton.render();
 		frameRate(0);
 	}
 
@@ -164,6 +207,7 @@ class TetrisScreen {
 		this.downButton.render();
 		this.rotateButton.render();
 		this.hardDropButton.render();
+		this.toggleFullScreenButton.render();
 	}
 
 	renderGameOver() {
@@ -185,6 +229,7 @@ class TetrisScreen {
 		);
 		pop();
 		this.retryButton.render();
+		this.toggleFullScreenButton.render();
 		frameRate(0);
 	}
 }
