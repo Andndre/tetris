@@ -192,6 +192,7 @@ class Tetris {
 		this.score = 0;
 		this.isGameOver = false;
 		this.level = 0;
+		this.lines = 0;
 		fps = PAL_FPS[this.level];
 		this.spawn();
 	}
@@ -274,10 +275,7 @@ class Tetris {
 
 		if (dir == DOWN) {
 			this.score++;
-			if (this.score > this.highScore) {
-				this.highScore = this.score;
-				localStorage.setItem("highscore", this.score);
-			}
+			this.updateHighScore();
 		}
 
 		if (wall == WALL) return;
@@ -373,10 +371,7 @@ class Tetris {
 			fps = PAL_FPS[this.level];
 			frameRate(fps);
 		}
-		if (this.score > this.highScore) {
-			this.highScore = this.score;
-			localStorage.setItem("highscore", this.score);
-		}
+		this.updateHighScore();
 	}
 
 	checkWallOnMove(dir, coords) {
@@ -483,11 +478,19 @@ class Tetris {
 		}
 
 		this.score += 2 * minDistance;
+		this.updateHighScore();
 
 		for (let i = 0; i < coords.length; i++) {
 			coords[i].y += minDistance;
 		}
 		return coords;
+	}
+
+	updateHighScore() {
+		if (this.score > this.highScore) {
+			this.highScore = this.score;
+			localStorage.setItem("highscore", this.score);
+		}
 	}
 
 	hardDrop() {
