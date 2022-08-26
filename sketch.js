@@ -46,23 +46,23 @@ function toggleFullscreen(elem) {
 }
 
 function preload() {
-	playArrImg = loadImage("assets/play.png");
+	playArrImg = loadImage('assets/play.png');
 
-	leftArrImg = loadImage("assets/arrow_left_15601.png");
-	rightArrImg = loadImage("assets/arrow_right_15600.png");
-	downArrImg = loadImage("assets/arrowdown_flech_1539.png");
-	rotateImg = loadImage("assets/refresh_arrow_1546.png");
-	hardDropImg = loadImage("assets/28_Drop_Box_24258.png");
+	leftArrImg = loadImage('assets/arrow_left_15601.png');
+	rightArrImg = loadImage('assets/arrow_right_15600.png');
+	downArrImg = loadImage('assets/arrowdown_flech_1539.png');
+	rotateImg = loadImage('assets/refresh_arrow_1546.png');
+	hardDropImg = loadImage('assets/28_Drop_Box_24258.png');
 	fullScreenImg = loadImage(
-		"assets/full-full-screen-layout-orientation-expand-screen_81433.png"
+		'assets/full-full-screen-layout-orientation-expand-screen_81433.png'
 	);
 
-	blockyFont = loadFont("assets/clacon2.ttf");
+	blockyFont = loadFont('assets/clacon2.ttf');
 }
 
 function setup() {
 	createCanvas(windowWidth, windowHeight);
-	music = document.getElementById("music");
+	music = document.getElementById('music');
 	tetris = new Tetris(10, 24);
 	tetrisScreen = new TetrisScreen();
 	autoMoveDown = true;
@@ -72,6 +72,7 @@ function setup() {
 	stroke(0);
 	loaded = true;
 	background(0);
+	checkOrientation();
 	tetrisScreen.render();
 }
 
@@ -93,17 +94,17 @@ function keyTyped() {
 		tetrisScreen.currentScreen != STATE_IN_GAME
 	)
 		return;
-	if (key == "q") {
+	if (key == 'q') {
 		tetris.rotate(LEFT);
-	} else if (key == "e") {
+	} else if (key == 'e') {
 		tetris.rotate(RIGHT);
-	} else if (key == "w") {
+	} else if (key == 'w') {
 		tetris.rotate(LEFT);
-	} else if (key == "a") {
+	} else if (key == 'a') {
 		tetris.move(LEFT);
-	} else if (key == "d") {
+	} else if (key == 'd') {
 		tetris.move(RIGHT);
-	} else if (key == "s") {
+	} else if (key == 's') {
 		tetris.move(DOWN);
 	}
 	autoMoveDown = false;
@@ -133,10 +134,23 @@ function keyPressed() {
 	redraw();
 }
 
+function checkOrientation() {
+	const orientationAlert = document.querySelector('.orientation-alert');
+	console.log(orientationAlert);
+	if (window.innerHeight > window.innerWidth) {
+		orientationAlert.classList.remove('hidden');
+		orientationAlert.classList.add('visible');
+	} else {
+		orientationAlert.classList.remove('visible');
+		orientationAlert.classList.add('hidden');
+	}
+}
+
 function windowResized() {
 	autoMoveDown = false;
 	tetris.onResized();
 	autoMoveDown = false;
 	tetrisScreen.onResized();
+	checkOrientation();
 	redraw();
 }
