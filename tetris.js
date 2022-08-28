@@ -1,18 +1,18 @@
-let grey = "#6e6e6e";
+let grey = '#6e6e6e';
 let colors = [
-	"#f02011",
-	"#f07211",
-	"#f0c311",
-	"#c7f011",
-	"#11ecf0",
-	"#1172f0",
-	"#b511f0",
-	"#f0118c",
+	'#f02011',
+	'#f07211',
+	'#f0c311',
+	'#c7f011',
+	'#11ecf0',
+	'#1172f0',
+	'#b511f0',
+	'#f0118c',
 ];
 
 class Tetris {
 	constructor(sizeX, sizeY) {
-		this.highScore = localStorage.getItem("highscore") || 0;
+		this.highScore = localStorage.getItem('highscore') || 0;
 		this.sizeX = sizeX;
 		this.sizeY = sizeY;
 
@@ -205,7 +205,6 @@ class Tetris {
 		this.nextActiveMaterial = random(colors);
 		this.nextActiveType = floor(random(6));
 		this.nextActiveCoord = createVector(this.sizeX / 2, 1);
-		this.renderActive();
 	}
 
 	render() {
@@ -231,16 +230,12 @@ class Tetris {
 		push();
 		fill(255);
 		textSize(this.scale * 1.1);
-		text("Next", -this.scale * 6.5, this.scale * 1.5);
+		text('Next', -this.scale * 6.5, this.scale * 1.5);
 		pop();
 
-		let coords = this.getCoords(
-			this.nextActiveType,
-			this.nextActiveCoord,
-			0
-		);
+		const coords = this.getCoords(this.nextActiveType, this.nextActiveCoord, 0);
 
-		for (let coord of coords) {
+		for (const coord of coords) {
 			Cell.render(
 				coord.x - 10.5,
 				coord.y + 3,
@@ -283,7 +278,7 @@ class Tetris {
 			if (dir == LEFT || dir == RIGHT) return;
 			this.applyBoxes(before);
 			this.spawn();
-			this.update();
+			// this.update();
 			return;
 		}
 		let intersects = this.checkIntersection(after);
@@ -291,12 +286,11 @@ class Tetris {
 			if (dir == LEFT || dir == RIGHT) return;
 			this.applyBoxes(before);
 			this.spawn();
-			this.update();
+			// this.update();
 			return;
 		}
 
 		this.activeCoord = newCoord;
-		this.renderActive();
 	}
 
 	applyBoxes(coords) {
@@ -391,7 +385,7 @@ class Tetris {
 	}
 
 	rotate(rot) {
-		let wall = this.checkWallOnRotation();
+		const wall = this.checkWallOnRotation();
 		if (wall == WALL) return;
 		let after = this.rotation;
 
@@ -402,8 +396,8 @@ class Tetris {
 			after = this.shapesOffsets[this.activeType].length - 1;
 		}
 
-		let coords = this.getCoords(this.activeType, this.activeCoord, after);
-		let intersects = this.checkIntersection(coords);
+		const coords = this.getCoords(this.activeType, this.activeCoord, after);
+		const intersects = this.checkIntersection(coords);
 
 		if (intersects == SPAWN) return;
 
@@ -411,7 +405,7 @@ class Tetris {
 	}
 
 	getCoords(type, center, rotation) {
-		let result = [];
+		const result = [];
 		for (let i = 0; i < this.shapesOffsets[type][rotation].length; i++) {
 			let offset = this.shapesOffsets[type][rotation][i];
 			result.push(createVector(offset.x + center.x, offset.y + center.y));
@@ -457,13 +451,13 @@ class Tetris {
 	}
 
 	hardDropCoords() {
-		let coords = this.getCoords(
+		const coords = this.getCoords(
 			this.activeType,
 			this.activeCoord,
 			this.rotation
 		);
 		let minDistance = this.sizeY;
-		for (let coord of coords) {
+		for (const coord of coords) {
 			let hit = false;
 			for (let i = coord.y + 1; i < this.boxes.length; i++) {
 				for (let j = 0; j < this.boxes[i].length; j++) {
@@ -489,7 +483,7 @@ class Tetris {
 	updateHighScore() {
 		if (this.score > this.highScore) {
 			this.highScore = this.score;
-			localStorage.setItem("highscore", this.score);
+			localStorage.setItem('highscore', this.score);
 		}
 	}
 
@@ -497,7 +491,7 @@ class Tetris {
 		let coords = this.hardDropCoords();
 		this.applyBoxes(coords);
 		this.spawn();
-		this.update();
+		// this.update();
 	}
 
 	updateStats() {
@@ -505,16 +499,16 @@ class Tetris {
 		fill(255);
 		textSize(this.scale * 1.1);
 		let xPos = this.width + this.scale * 3;
-		text("Score", xPos, this.scale * 1.5);
-		text("Lines", xPos, this.scale * 3.5);
-		text("Level", xPos, this.scale * 5.5);
+		text('Score', xPos, this.scale * 1.5);
+		text('Lines', xPos, this.scale * 3.5);
+		text('Level', xPos, this.scale * 5.5);
 		textSize(this.scale);
 		fill(color(colors[3]));
-		text("" + this.score, xPos, this.scale * 2.5);
+		text('' + this.score, xPos, this.scale * 2.5);
 		fill(color(colors[1]));
-		text("" + this.lines, xPos, this.scale * 4.5);
+		text('' + this.lines, xPos, this.scale * 4.5);
 		fill(color(colors[0]));
-		text("" + this.level, xPos, this.scale * 6.5);
+		text('' + this.level, xPos, this.scale * 6.5);
 		pop();
 	}
 }

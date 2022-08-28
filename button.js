@@ -18,8 +18,6 @@ class Button {
 		return true;
 	}
 
-	render() {}
-
 	checkCoord() {
 		return (
 			mouseX >= this.pos.x &&
